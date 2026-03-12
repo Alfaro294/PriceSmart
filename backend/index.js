@@ -1,4 +1,4 @@
-import app from "./app"
+import app from "./app.js"
 import "./database"
 
 // Se crea la funcion, encargada de ejecutar el servidor
