@@ -1,8 +1,10 @@
 import app from "./app.js"
-import "./database"
+import "./database.js"
+import { config } from "./src/config.js";
 
 // Se crea la funcion, encargada de ejecutar el servidor
 async function main(params) {
-    app.listen(4000)
+    app.listen(config.server.port)
+    console.log("server on  port" + config.server.port)
 }
 main();
