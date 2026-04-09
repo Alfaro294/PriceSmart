@@ -1,5 +1,6 @@
 /* Campos:
     name
+    lastName
     email
     password
     birthday
@@ -14,6 +15,9 @@ const clientsSchema = new Schema({
     name : {
         type : String
     },
+    lastName : {
+        type : String
+    },
     email : {
         type : String
     },
@@ -23,9 +27,9 @@ const clientsSchema = new Schema({
     birthday : {
         type : Date
     },
-    status : {
+    /*status : {
         type : Boolean
-    },
+    },*/
     isVerified : {
         type : Boolean
     },
