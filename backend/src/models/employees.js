@@ -36,6 +36,15 @@ const employeesSchema = new Schema ({
     idBranches : {
         type : mongoose.Schema.Types.ObjectId,
         ref: "Branches"
+    },
+    isVerified : {
+        type : Boolean
+    },
+    loginAttemps : {
+        type : Number
+    },
+    timeOut : {
+        type : Date
     }
 },
 {
