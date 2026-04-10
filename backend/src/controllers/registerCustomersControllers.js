@@ -9,7 +9,7 @@ import customerModel from "../models/customerModel.js";
 import { config } from "../config.js";
 
 // Creo un array de funciones
-const registerCustomers = {};
+const registerCustomersController = {};
 
 registerCustomersController.register = async (req, res) => {
     try {
@@ -63,8 +63,72 @@ registerCustomersController.register = async (req, res) => {
 
         res.cookie("verificationTokenCookie", tokenCode, {maxAge: 15 * 60 * 1000}) // Se especifica el tiempo 15 = minuto. 60 = segundos. 1000 = milisegundos
 
+        // Enviar un correo con el código
+        // 1. Transporter -> ¿Quien envia el correo?
+        const transporter = nodemailer.createTransport({
+            service : "gmail",
+            auth : {
+                user: config.email.user_email,
+                pass: config.email.user_password
+            }
+        })
+
+        // 2. ¿Quien lo recibe?
+        const mailOptions = {
+            from : config.email.user_email,
+            to: email,
+            subject : "Verificación de cuenta",
+            text: "Para verificar tu cuenta, utiliza este código" + verificationCode + "expira en 15 minutos" 
+        }
+
+        // 3. Enviar el correo electrónico
+        transporter.sendMail(mailOptions, (error, info)=>{
+            if(error){
+                console.log("error"+error)
+                return res.status(500).json({message:"error"})
+            }
+
+            res.status(200).json({message: "email send"})
+        });
+
+
         }
     catch (error) {
-        
+        console.log("error" + error)
+        return res.status(500).json({message: "Internal server error"})
     }
-}
+};
+
+registerCustomersController.verifyCode = async (req, res) => {
+    try {
+        // 1. Solicitamos el código que el usuario escribio en el frontend
+        const {verificationCodeRequest } = req.body;
+
+        // 2. Obtener el token de la cookie
+        const token =req.cookies.verificationTokenCookie;
+
+        // 3. Extraer la información del token
+        const decoded = jsonwebtoken.verify(token, config.JWT.secret)
+        const {email, verificationCode:storedCode} = decoded;
+
+        // 4. Comparamos el token que el usuario escribio en el frontend conel que se se esta guarando en el token
+        if(verificationCodeRequest !== storedCode){
+            return res.status(400).json({message: "Invalid Code"})
+        }
+
+        // Si el código si esta bien, entonces, se coloca el campo "isVerified" en true
+        const customer = await customerModel.findOne({ email });
+        customer.isVerified = true;
+        await customer.save();
+
+        res.clearCookie("verificationTokenCookie")
+
+        res.json ({message: "Email verified successfully"})
+
+    } catch (error) {
+        console.log("error" + error)
+        return res.status(500).json({message : "Internal server error" + error})
+    }
+};
+
+export default registerCustomersController;
