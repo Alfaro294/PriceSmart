@@ -11,6 +11,7 @@ import registerCustomerRoutes from "./src/routes/registerCustomers.js";
 import registerEmployeesRoutes from "./src/routes/registerEmployees.js";
 import loginCustomerRoutes from "./src/routes/loginCustomer.js"
 import logoutRoutes from "./src/routes/logoutRoutes.js"
+import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js"
 import cookieParser from "cookie-parser";
 const app = express();
 
@@ -30,5 +31,5 @@ app.use("/api/registerCustomers", registerCustomerRoutes);
 app.use("/api/registerEmployees", registerEmployeesRoutes);
 app.use ("/api/loginCustomer", loginCustomerRoutes);
 app.use ("/api/logout", logoutRoutes)
-app.use("/api/recoveryPassword", )
+app.use("/api/recoveryPassword", recoveryPasswordRoutes)
 export default app;
