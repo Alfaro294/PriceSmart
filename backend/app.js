@@ -13,8 +13,18 @@ import loginCustomerRoutes from "./src/routes/loginCustomer.js"
 import logoutRoutes from "./src/routes/logoutRoutes.js"
 import recoveryPasswordRoutes from "./src/routes/recoveryPassword.js"
 import cookieParser from "cookie-parser";
+import cors from "cors";
 const app = express();
 
+app.use(cors({
+ 
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+ 
+    //Permitir el envío de cookies y credenciales
+ 
+    credentials: true
+ 
+}))
 app.use (cookieParser());
 // Que pueda aceptar JSON desde postman
 app.use(express.json());
